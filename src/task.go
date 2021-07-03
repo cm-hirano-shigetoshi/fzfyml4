@@ -1,7 +1,6 @@
 package fzfyml
 
 import (
-	"fmt"
 	"os"
 	"os/exec"
 )
@@ -10,18 +9,22 @@ type Task struct {
 	source string
 }
 
-func (t *Task) Init(yml interface{}) {
+func (task *Task) Init(yml interface{}) {
 	baseTask := yml.(map[string]interface{})["base_task"].(map[string]interface{})
-	t.source = baseTask["source"].(string)
+	task.source = baseTask["source"].(string)
 }
 
-func (t *Task) Run() {
-	fmt.Print(fzf(t.source))
+func (task *Task) Run() string {
+	return task.execFzf(task.getExecuteCommand())
 }
 
-func fzf(source string) string {
-	cmd := source + " | fzf"
-	cmd_exec := exec.Command("sh", "-c", cmd)
+func (task *Task) Test(answer string) bool {
+	response := task.getExecuteCommand()
+	return answer == response
+}
+
+func (task *Task) execFzf(command string) string {
+	cmd_exec := exec.Command("sh", "-c", command)
 	cmd_exec.Stderr = os.Stderr
 	out, _ := cmd_exec.Output()
 	if len(out) > 0 {
@@ -30,4 +33,8 @@ func fzf(source string) string {
 	} else {
 		return ""
 	}
+}
+
+func (task *Task) getExecuteCommand() string {
+	return task.source + " | fzf"
 }

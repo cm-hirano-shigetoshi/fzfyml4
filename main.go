@@ -13,5 +13,7 @@ func main() {
 	}
 	if flag.Args()[0] == "run" {
 		fzfyml.Run(flag.Args()[1])
+	} else if flag.Args()[0] == "test" {
+		fzfyml.Test(flag.Args()[1])
 	}
 }
