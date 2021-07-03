@@ -14,8 +14,10 @@ func (task *Task) Init(yml interface{}) {
 	task.source = baseTask["source"].(string)
 }
 
-func (task *Task) Run() string {
-	return task.execFzf(task.getExecuteCommand())
+func (task *Task) Run() Result {
+	var result Result
+	result.Init(task.execFzf(task.getExecuteCommand()))
+	return result
 }
 
 func (task *Task) Test(answer string) bool {
@@ -36,5 +38,5 @@ func (task *Task) execFzf(command string) string {
 }
 
 func (task *Task) getExecuteCommand() string {
-	return task.source + " | fzf"
+	return task.source + " | fzf --print-query --expect='ctrl-c'"
 }

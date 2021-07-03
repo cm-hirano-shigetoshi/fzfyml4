@@ -11,7 +11,13 @@ func Run(ymlPath string) {
 	yml := getYml(ymlPath)
 	var task Task
 	task.Init(yml)
-	fmt.Println(task.Run())
+	for {
+		result := task.Run()
+		if true {
+			fmt.Println(result.output)
+			break
+		}
+	}
 }
 
 func Test(ymlPath string) {
