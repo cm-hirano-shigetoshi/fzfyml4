@@ -9,9 +9,13 @@ type Options struct {
 	list map[string]string
 }
 
-func (options *Options) InitFromYml(optionList []interface{}) {
+func (options *Options) init(optionList []interface{}) {
 	options.list = map[string]string{}
 	options.setDefaultOptions()
+	options.initFromYml(optionList)
+}
+
+func (options *Options) initFromYml(optionList []interface{}) {
 	for _, opt := range optionList {
 		if strings.Contains(opt.(string), "=") {
 			sp := strings.Split(opt.(string), "=")
@@ -22,7 +26,7 @@ func (options *Options) InitFromYml(optionList []interface{}) {
 	}
 }
 
-func (options *Options) GetOptionText() string {
+func (options *Options) getOptionText() string {
 	opts := []string{}
 	for key, val := range options.list {
 		if val != "nil" {

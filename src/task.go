@@ -11,25 +11,25 @@ type Task struct {
 	options Options
 }
 
-func (task *Task) Init(yml interface{}) {
+func (task *Task) init(yml interface{}) {
 	baseTask := yml.(map[string]interface{})["base_task"].(map[string]interface{})
 	task.source = baseTask["source"].(string)
-	task.options.InitFromYml(baseTask["options"].([]interface{}))
+	task.options.init(baseTask["options"].([]interface{}))
 }
 
-func (task *Task) Run() Result {
+func (task *Task) run() Result {
 	var result Result
 	result.Init(task.execFzf(task.getExecuteCommand()))
 	return result
 }
 
-func (task *Task) Test(answer string) bool {
+func (task *Task) test(answer string) bool {
 	response := task.getExecuteCommand()
 	fmt.Println(response)
 	return answer == response
 }
 
-func (task *Task) IsAppEnd(result Result) bool {
+func (task *Task) isAppEnd(result Result) bool {
 	return true
 }
 
@@ -46,6 +46,6 @@ func (task *Task) execFzf(command string) string {
 }
 
 func (task *Task) getExecuteCommand() string {
-	optionText := task.options.GetOptionText()
+	optionText := task.options.getOptionText()
 	return task.source + " | fzf " + optionText
 }
