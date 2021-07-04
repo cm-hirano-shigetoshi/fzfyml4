@@ -10,11 +10,19 @@ import (
 func Run(ymlPath string) {
 	yml := getYml(ymlPath)
 	baseTask := yml.(map[string]interface{})["base_task"].(map[string]interface{})
+	taskSwitch := map[string]interface{}{}
+	if _, ok := yml.(map[string]interface{})["task_switch"]; ok {
+		for key, val := range yml.(map[string]interface{})["task_switch"].(map[string]interface{}) {
+			taskSwitch[key] = val
+		}
+	}
 	var task Task
 	task.init(baseTask, ymlPath)
 	for {
 		result := task.run()
-		if task.isAppEnd(result) {
+		if newTask, ok := taskSwitch[result.key]; ok {
+			task.update(newTask.(map[string]interface{}))
+		} else {
 			fmt.Print(task.postOperations.apply(result))
 			break
 		}

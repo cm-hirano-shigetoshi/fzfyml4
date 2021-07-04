@@ -26,6 +26,12 @@ func (task *Task) init(baseTask map[string]interface{}, ymlPath string) {
 	}
 }
 
+func (task *Task) update(newTask map[string]interface{}) {
+	if _, ok := newTask["source"]; ok {
+		task.source = newTask["source"].(string)
+	}
+}
+
 func (task *Task) run() Result {
 	var result Result
 	result.Init(task.execFzf(task.getExecuteCommand()))
@@ -41,10 +47,6 @@ func (task *Task) test(answer string) bool {
 		fmt.Println(response)
 		return false
 	}
-}
-
-func (task *Task) isAppEnd(result Result) bool {
-	return true
 }
 
 func (task *Task) execFzf(command string) string {
