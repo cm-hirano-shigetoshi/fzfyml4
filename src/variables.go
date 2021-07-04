@@ -2,6 +2,7 @@ package fzfyml
 
 import (
 	//"fmt"
+	"path/filepath"
 	"strings"
 )
 
@@ -9,8 +10,13 @@ type Variables struct {
 	vars map[string]string
 }
 
-func (variables *Variables) init(vars map[string]interface{}) {
+func (variables *Variables) init(vars map[string]interface{}, ymlPath string) {
 	variables.vars = map[string]string{}
+	variables.vars["yml_dir"] = filepath.Dir(ymlPath)
+	variables.initFromYml(vars)
+}
+
+func (variables *Variables) initFromYml(vars map[string]interface{}) {
 	for key, val := range vars {
 		variables.vars[key] = val.(string)
 	}

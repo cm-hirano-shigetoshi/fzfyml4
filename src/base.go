@@ -10,7 +10,7 @@ import (
 func Run(ymlPath string) {
 	yml := getYml(ymlPath)
 	var task Task
-	task.init(yml)
+	task.init(yml, ymlPath)
 	for {
 		result := task.run()
 		if task.isAppEnd(result) {
@@ -24,7 +24,7 @@ func Test(ymlPath string) {
 	yml := getYml(ymlPath)
 	tests := yml.(map[string]interface{})["test"].([]interface{})
 	var task Task
-	task.init(yml)
+	task.init(yml, ymlPath)
 
 	test := tests[0]
 	if !task.test(test.(map[string]interface{})["answer"].(string)) {
