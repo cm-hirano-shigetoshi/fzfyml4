@@ -25,6 +25,10 @@ func (task *Task) Test(answer string) bool {
 	return answer == response
 }
 
+func (task *Task) IsAppEnd(result Result) bool {
+	return true
+}
+
 func (task *Task) execFzf(command string) string {
 	cmd_exec := exec.Command("sh", "-c", command)
 	cmd_exec.Stderr = os.Stderr
