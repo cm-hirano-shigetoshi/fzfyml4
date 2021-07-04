@@ -1,17 +1,20 @@
 package fzfyml
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
 )
 
 type Task struct {
-	source string
+	source  string
+	options Options
 }
 
 func (task *Task) Init(yml interface{}) {
 	baseTask := yml.(map[string]interface{})["base_task"].(map[string]interface{})
 	task.source = baseTask["source"].(string)
+	task.options.InitFromYml(baseTask["options"].([]interface{}))
 }
 
 func (task *Task) Run() Result {
@@ -22,6 +25,7 @@ func (task *Task) Run() Result {
 
 func (task *Task) Test(answer string) bool {
 	response := task.getExecuteCommand()
+	fmt.Println(response)
 	return answer == response
 }
 
@@ -42,5 +46,6 @@ func (task *Task) execFzf(command string) string {
 }
 
 func (task *Task) getExecuteCommand() string {
-	return task.source + " | fzf --print-query --expect='ctrl-c'"
+	optionText := task.options.GetOptionText()
+	return task.source + " | fzf " + optionText
 }
