@@ -40,5 +40,5 @@ func (options *Options) getOptionText() string {
 
 func (options *Options) setDefaultOptions() {
 	options.list["print-query"] = "nil"
-	options.list["expect"] = "enter"
+	options.list["expect"] = "enter,esc,ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-z"
 }

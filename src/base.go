@@ -14,7 +14,7 @@ func Run(ymlPath string) {
 	for {
 		result := task.run()
 		if task.isAppEnd(result) {
-			fmt.Println(result.output)
+			fmt.Print(task.postOperations.apply(result))
 			break
 		}
 	}

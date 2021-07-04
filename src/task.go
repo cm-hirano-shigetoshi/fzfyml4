@@ -7,14 +7,20 @@ import (
 )
 
 type Task struct {
-	source  string
-	options Options
+	source         string
+	options        Options
+	postOperations PostOperations
 }
 
 func (task *Task) init(yml interface{}) {
 	baseTask := yml.(map[string]interface{})["base_task"].(map[string]interface{})
 	task.source = baseTask["source"].(string)
-	task.options.init(baseTask["options"].([]interface{}))
+	if _, ok := baseTask["options"]; ok {
+		task.options.init(baseTask["options"].([]interface{}))
+	}
+	if _, ok := baseTask["post_operations"]; ok {
+		task.postOperations.init(baseTask["post_operations"].([]interface{}))
+	}
 }
 
 func (task *Task) run() Result {
@@ -25,8 +31,13 @@ func (task *Task) run() Result {
 
 func (task *Task) test(answer string) bool {
 	response := task.getExecuteCommand()
-	fmt.Println(response)
-	return answer == response
+	if answer == response {
+		return true
+	} else {
+		fmt.Println(answer)
+		fmt.Println(response)
+		return false
+	}
 }
 
 func (task *Task) isAppEnd(result Result) bool {
