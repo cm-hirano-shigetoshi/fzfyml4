@@ -8,6 +8,7 @@ import (
 
 type Task struct {
 	source         string
+	variables      Variables
 	options        Options
 	postOperations PostOperations
 }
@@ -15,6 +16,9 @@ type Task struct {
 func (task *Task) init(yml interface{}) {
 	baseTask := yml.(map[string]interface{})["base_task"].(map[string]interface{})
 	task.source = baseTask["source"].(string)
+	if _, ok := baseTask["variables"]; ok {
+		task.variables.init(baseTask["variables"].(map[string]interface{}))
+	}
 	if _, ok := baseTask["options"]; ok {
 		task.options.init(baseTask["options"].([]interface{}))
 	}
@@ -58,5 +62,6 @@ func (task *Task) execFzf(command string) string {
 
 func (task *Task) getExecuteCommand() string {
 	optionText := task.options.getOptionText()
+	optionText = task.variables.expand(optionText)
 	return task.source + " | fzf " + optionText
 }
