@@ -9,8 +9,9 @@ import (
 
 func Run(ymlPath string) {
 	yml := getYml(ymlPath)
+	baseTask := yml.(map[string]interface{})["base_task"].(map[string]interface{})
 	var task Task
-	task.init(yml, ymlPath)
+	task.init(baseTask, ymlPath)
 	for {
 		result := task.run()
 		if task.isAppEnd(result) {
@@ -22,10 +23,11 @@ func Run(ymlPath string) {
 
 func Test(ymlPath string) {
 	yml := getYml(ymlPath)
-	tests := yml.(map[string]interface{})["test"].([]interface{})
+	baseTask := yml.(map[string]interface{})["base_task"].(map[string]interface{})
 	var task Task
-	task.init(yml, ymlPath)
+	task.init(baseTask, ymlPath)
 
+	tests := yml.(map[string]interface{})["test"].([]interface{})
 	test := tests[0]
 	if !task.test(test.(map[string]interface{})["answer"].(string)) {
 		log.Fatal("test failed!")

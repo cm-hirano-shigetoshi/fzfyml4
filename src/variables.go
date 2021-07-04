@@ -10,7 +10,7 @@ type Variables struct {
 	vars map[string]string
 }
 
-func (variables *Variables) init(vars map[string]interface{}, ymlPath string) {
+func (variables *Variables) init(ymlPath string, vars map[string]interface{}) {
 	variables.vars = map[string]string{}
 	variables.vars["yml_dir"] = filepath.Dir(ymlPath)
 	variables.initFromYml(vars)
