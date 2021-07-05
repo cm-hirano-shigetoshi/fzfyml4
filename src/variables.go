@@ -16,6 +16,10 @@ func (variables *Variables) init(ymlPath string, vars map[string]interface{}) {
 	variables.initFromYml(vars)
 }
 
+func (variables *Variables) update(vars map[string]interface{}) {
+	variables.initFromYml(vars)
+}
+
 func (variables *Variables) initFromYml(vars map[string]interface{}) {
 	for key, val := range vars {
 		variables.vars[key] = val.(string)
