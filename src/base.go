@@ -7,8 +7,16 @@ import (
 	"log"
 )
 
-func Run(ymlPath string) {
-	yml := getYml(ymlPath)
+func getYml(ymlPath string) interface{} {
+	ymlData, _ := ioutil.ReadFile(ymlPath)
+	var yml interface{}
+	if err := yaml.Unmarshal([]byte(ymlData), &yml); err != nil {
+		log.Fatal(err)
+	}
+	return yml
+}
+
+func initTask(yml interface{}, ymlPath string) (Task, map[string]interface{}) {
 	baseTask := yml.(map[string]interface{})["base_task"].(map[string]interface{})
 	taskSwitch := map[string]interface{}{}
 	if _, ok := yml.(map[string]interface{})["task_switch"]; ok {
@@ -18,7 +26,12 @@ func Run(ymlPath string) {
 	}
 	var task Task
 	task.init(baseTask, ymlPath)
+	return task, taskSwitch
+}
 
+func Run(ymlPath string) {
+	yml := getYml(ymlPath)
+	task, taskSwitch := initTask(yml, ymlPath)
 	for {
 		result := task.run()
 		if newTask, ok := taskSwitch[result.key]; ok {
@@ -32,16 +45,7 @@ func Run(ymlPath string) {
 
 func Test(ymlPath string) {
 	yml := getYml(ymlPath)
-	baseTask := yml.(map[string]interface{})["base_task"].(map[string]interface{})
-	taskSwitch := map[string]interface{}{}
-	if _, ok := yml.(map[string]interface{})["task_switch"]; ok {
-		for key, val := range yml.(map[string]interface{})["task_switch"].(map[string]interface{}) {
-			taskSwitch[key] = val
-		}
-	}
-	var task Task
-	task.init(baseTask, ymlPath)
-
+	task, taskSwitch := initTask(yml, ymlPath)
 	tests := yml.(map[string]interface{})["test"].([]interface{})
 	test := tests[0]
 	if !task.test(test.(map[string]interface{})["answer"].(string)) {
@@ -60,13 +64,4 @@ func Test(ymlPath string) {
 			break
 		}
 	}
-}
-
-func getYml(ymlPath string) interface{} {
-	ymlData, _ := ioutil.ReadFile(ymlPath)
-	var yml interface{}
-	if err := yaml.Unmarshal([]byte(ymlData), &yml); err != nil {
-		log.Fatal(err)
-	}
-	return yml
 }
