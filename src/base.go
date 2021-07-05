@@ -43,11 +43,17 @@ func Run(ymlPath string, args []string) {
 	}
 }
 
-func Test(ymlPath string, args []string) {
+func Test(ymlPath string) {
 	yml := getYml(ymlPath)
-	task, taskSwitch := initTask(yml, ymlPath, args)
 	tests := yml.(map[string]interface{})["test"].([]interface{})
 	test := tests[0]
+	args := []string{}
+	if argsList, ok := test.(map[string]interface{})["args"].([]interface{}); ok {
+		for _, arg := range argsList {
+			args = append(args, arg.(string))
+		}
+	}
+	task, taskSwitch := initTask(yml, ymlPath, args)
 	if !task.test(test.(map[string]interface{})["answer"].(string)) {
 		log.Fatal("test failed!")
 	}
