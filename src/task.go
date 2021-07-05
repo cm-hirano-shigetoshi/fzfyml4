@@ -37,7 +37,7 @@ func (task *Task) update(newTask map[string]interface{}) {
 
 func (task *Task) run() Result {
 	var result Result
-	result.Init(task.execFzf(task.getExecuteCommand()))
+	result.init(task.execFzf(task.getExecuteCommand()))
 	return result
 }
 
