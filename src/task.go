@@ -15,9 +15,8 @@ type Task struct {
 
 func (task *Task) init(baseTask map[string]interface{}, ymlPath string, args []string) {
 	task.source = baseTask["source"].(string)
-	if _, ok := baseTask["variables"]; ok {
-		task.variables.init(ymlPath, args, baseTask["variables"].(map[string]interface{}))
-	}
+	variables, _ := baseTask["variables"].(map[string]interface{})
+	task.variables.init(ymlPath, args, variables)
 	if _, ok := baseTask["options"]; ok {
 		task.options.init(baseTask["options"].([]interface{}))
 	}
@@ -66,8 +65,8 @@ func (task *Task) execFzf(command string) string {
 
 func (task *Task) getExecuteCommand() string {
 	optionText := task.options.getOptionText()
-	optionText = task.variables.expand(optionText)
 	command := task.source + " | fzf " + optionText
+	command = task.variables.expand(command)
 	//fmt.Fprintf(os.Stderr, command+"\n")
 	return command
 }
