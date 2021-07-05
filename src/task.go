@@ -67,6 +67,6 @@ func (task *Task) getExecuteCommand() string {
 	optionText := task.options.getOptionText()
 	command := task.source + " | fzf " + optionText
 	command = task.variables.expand(command)
-	//fmt.Fprintf(os.Stderr, command+"\n")
+	//fmt.Println(command+"\n")
 	return command
 }
