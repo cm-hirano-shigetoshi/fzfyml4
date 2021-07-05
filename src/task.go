@@ -22,7 +22,7 @@ func (task *Task) init(baseTask map[string]interface{}, ymlPath string) {
 		task.options.init(baseTask["options"].([]interface{}))
 	}
 	if _, ok := baseTask["post_operations"]; ok {
-		task.postOperations.init(baseTask["post_operations"].([]interface{}))
+		task.postOperations.init(baseTask["post_operations"].(map[string]interface{}))
 	}
 }
 
