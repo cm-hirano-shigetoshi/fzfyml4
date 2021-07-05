@@ -16,7 +16,7 @@ func getYml(ymlPath string) interface{} {
 	return yml
 }
 
-func initTask(yml interface{}, ymlPath string) (Task, map[string]interface{}) {
+func initTask(yml interface{}, ymlPath string, args []string) (Task, map[string]interface{}) {
 	baseTask := yml.(map[string]interface{})["base_task"].(map[string]interface{})
 	taskSwitch := map[string]interface{}{}
 	if _, ok := yml.(map[string]interface{})["task_switch"]; ok {
@@ -25,13 +25,13 @@ func initTask(yml interface{}, ymlPath string) (Task, map[string]interface{}) {
 		}
 	}
 	var task Task
-	task.init(baseTask, ymlPath)
+	task.init(baseTask, ymlPath, args)
 	return task, taskSwitch
 }
 
-func Run(ymlPath string) {
+func Run(ymlPath string, args []string) {
 	yml := getYml(ymlPath)
-	task, taskSwitch := initTask(yml, ymlPath)
+	task, taskSwitch := initTask(yml, ymlPath, args)
 	for {
 		result := task.run()
 		if newTask, ok := taskSwitch[result.key]; ok {
@@ -43,9 +43,9 @@ func Run(ymlPath string) {
 	}
 }
 
-func Test(ymlPath string) {
+func Test(ymlPath string, args []string) {
 	yml := getYml(ymlPath)
-	task, taskSwitch := initTask(yml, ymlPath)
+	task, taskSwitch := initTask(yml, ymlPath, args)
 	tests := yml.(map[string]interface{})["test"].([]interface{})
 	test := tests[0]
 	if !task.test(test.(map[string]interface{})["answer"].(string)) {

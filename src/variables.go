@@ -1,7 +1,7 @@
 package fzfyml
 
 import (
-	//"fmt"
+	"fmt"
 	"os/exec"
 	"path/filepath"
 	"strings"
@@ -13,10 +13,13 @@ type Variables struct {
 	expandedVars map[string]string
 }
 
-func (variables *Variables) init(ymlPath string, vars map[string]interface{}) {
+func (variables *Variables) init(ymlPath string, args []string, vars map[string]interface{}) {
 	variables.vars = map[string]string{}
 	variables.expandedVars = map[string]string{}
 	variables.vars["yml_dir"] = filepath.Dir(ymlPath)
+	for i, arg := range args {
+		variables.vars["arg"+fmt.Sprint(i+1)] = arg
+	}
 	variables.updateFromYml(vars)
 }
 

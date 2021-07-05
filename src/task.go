@@ -13,10 +13,10 @@ type Task struct {
 	postOperations PostOperations
 }
 
-func (task *Task) init(baseTask map[string]interface{}, ymlPath string) {
+func (task *Task) init(baseTask map[string]interface{}, ymlPath string, args []string) {
 	task.source = baseTask["source"].(string)
 	if _, ok := baseTask["variables"]; ok {
-		task.variables.init(ymlPath, baseTask["variables"].(map[string]interface{}))
+		task.variables.init(ymlPath, args, baseTask["variables"].(map[string]interface{}))
 	}
 	if _, ok := baseTask["options"]; ok {
 		task.options.init(baseTask["options"].([]interface{}))
