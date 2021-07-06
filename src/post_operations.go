@@ -38,5 +38,4 @@ func (operations *PostOperations) getExpects() []string {
 		expects = append(expects, key)
 	}
 	return expects
-
 }

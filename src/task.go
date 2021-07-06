@@ -40,6 +40,9 @@ func (task *Task) update(newTask map[string]interface{}) {
 	if _, ok := newTask["variables"]; ok {
 		task.variables.update(newTask["variables"].(map[string]interface{}))
 	}
+	if _, ok := newTask["binds"]; ok {
+		task.binds.update(newTask["binds"].(map[string]interface{}))
+	}
 }
 
 func (task *Task) run() Result {

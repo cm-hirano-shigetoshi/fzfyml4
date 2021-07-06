@@ -10,10 +10,16 @@ type Binds struct {
 
 func (binds *Binds) init(list map[string]interface{}) {
 	binds.list = map[string][]string{}
+	binds.update(list)
+}
+
+func (binds *Binds) update(list map[string]interface{}) {
 	for key, val := range list {
+		operations := []string{}
 		for _, ope := range val.([]interface{}) {
-			binds.list[key] = append(binds.list[key], ope.(string))
+			operations = append(operations, ope.(string))
 		}
+		binds.list[key] = operations
 	}
 }
 
