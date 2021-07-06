@@ -31,3 +31,12 @@ func (operations *PostOperations) apply(result Result) string {
 	}
 	return text
 }
+
+func (operations *PostOperations) getExpects() []string {
+	expects := []string{}
+	for key, _ := range operations.list {
+		expects = append(expects, key)
+	}
+	return expects
+
+}

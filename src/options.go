@@ -11,7 +11,6 @@ type Options struct {
 
 func (options *Options) init(optionList []interface{}) {
 	options.list = map[string]string{}
-	options.setDefaultOptions()
 	options.initFromYml(optionList)
 }
 
@@ -26,19 +25,14 @@ func (options *Options) initFromYml(optionList []interface{}) {
 	}
 }
 
-func (options *Options) getOptionText() string {
-	opts := []string{}
+func (options *Options) getOptionList() []string {
+	list := []string{}
 	for key, val := range options.list {
 		if val != "nil" {
-			opts = append(opts, "--"+key+"="+val)
+			list = append(list, "--"+key+"="+val)
 		} else {
-			opts = append(opts, "--"+key)
+			list = append(list, "--"+key)
 		}
 	}
-	return strings.Join(opts, " ")
-}
-
-func (options *Options) setDefaultOptions() {
-	options.list["print-query"] = "nil"
-	options.list["expect"] = "enter,esc,ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-z"
+	return list
 }

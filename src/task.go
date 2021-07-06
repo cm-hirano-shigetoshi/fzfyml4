@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"sort"
+	"strings"
 )
 
 type Task struct {
@@ -11,9 +13,10 @@ type Task struct {
 	variables      Variables
 	options        Options
 	postOperations PostOperations
+	switchExpects  []string
 }
 
-func (task *Task) init(baseTask map[string]interface{}, ymlPath string, args []string) {
+func (task *Task) init(baseTask map[string]interface{}, ymlPath string, switchExpects []string, args []string) {
 	task.source = baseTask["source"].(string)
 	variables, _ := baseTask["variables"].(map[string]interface{})
 	task.variables.init(ymlPath, args, variables)
@@ -23,6 +26,7 @@ func (task *Task) init(baseTask map[string]interface{}, ymlPath string, args []s
 	if _, ok := baseTask["post_operations"]; ok {
 		task.postOperations.init(baseTask["post_operations"].(map[string]interface{}))
 	}
+	task.switchExpects = switchExpects
 }
 
 func (task *Task) update(newTask map[string]interface{}) {
@@ -36,12 +40,12 @@ func (task *Task) update(newTask map[string]interface{}) {
 
 func (task *Task) run() Result {
 	var result Result
-	result.init(task.execFzf(task.getExecuteCommand()))
+	result.init(task.execFzf(task.getExecuteCommand("run")))
 	return result
 }
 
 func (task *Task) test(answer string) bool {
-	response := task.getExecuteCommand()
+	response := task.getExecuteCommand("test")
 	if answer == response {
 		return true
 	} else {
@@ -63,10 +67,30 @@ func (task *Task) execFzf(command string) string {
 	}
 }
 
-func (task *Task) getExecuteCommand() string {
-	optionText := task.options.getOptionText()
-	command := task.source + " | fzf " + optionText
+func (task *Task) getExecuteCommand(mode string) string {
+	optionList := task.options.getOptionList()
+	expectList := task.getExpectList()
+	mondatoryList := []string{"--print-query"}
+	if mode == "test" {
+		sort.Strings(optionList)
+		sort.Strings(expectList)
+		sort.Strings(mondatoryList)
+	}
+	command := task.source + " | fzf " + strings.Join(optionList, " ") + " --expect=" + strings.Join(expectList, ",") + " " + strings.Join(mondatoryList, " ")
 	command = task.variables.expand(command)
 	//fmt.Println(command+"\n")
 	return command
+}
+
+func (task *Task) getExpectList() []string {
+	expects := []string{}
+	for _, key := range task.postOperations.getExpects() {
+		expects = append(expects, key)
+	}
+	for _, key := range task.switchExpects {
+		expects = append(expects, key)
+	}
+	expects = append(expects, strings.Split("enter,esc,ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-z", ",")...)
+	expects = uniqueStringSlice(expects)
+	return expects
 }

@@ -18,14 +18,16 @@ func getYml(ymlPath string) interface{} {
 
 func initTask(yml interface{}, ymlPath string, args []string) (Task, map[string]interface{}) {
 	baseTask := yml.(map[string]interface{})["base_task"].(map[string]interface{})
+	switchExpects := []string{}
 	taskSwitch := map[string]interface{}{}
 	if _, ok := yml.(map[string]interface{})["task_switch"]; ok {
 		for key, val := range yml.(map[string]interface{})["task_switch"].(map[string]interface{}) {
+			switchExpects = append(switchExpects, key)
 			taskSwitch[key] = val
 		}
 	}
 	var task Task
-	task.init(baseTask, ymlPath, args)
+	task.init(baseTask, ymlPath, switchExpects, args)
 	return task, taskSwitch
 }
 
