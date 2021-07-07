@@ -10,6 +10,7 @@ import (
 
 type Task struct {
 	source         string
+	query          string
 	variables      Variables
 	binds          Binds
 	preview        Preview
@@ -49,9 +50,13 @@ func (task *Task) update(newTask map[string]interface{}) {
 	}
 }
 
-func (task *Task) run() Result {
+func (task *Task) run(query interface{}) Result {
 	var result Result
-	result.init(task.execFzf(task.getExecuteCommand("run")))
+	command := task.getExecuteCommand("run")
+	if query != nil {
+		command += " --query '" + query.(string) + "'"
+	}
+	result.init(task.execFzf(command))
 	return result
 }
 
