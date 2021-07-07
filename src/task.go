@@ -12,6 +12,7 @@ type Task struct {
 	source         string
 	variables      Variables
 	binds          Binds
+	preview        Preview
 	options        Options
 	postOperations PostOperations
 	switchExpects  []string
@@ -23,6 +24,9 @@ func (task *Task) init(baseTask map[string]interface{}, ymlPath string, switchEx
 	task.variables.init(ymlPath, args, variables)
 	if _, ok := baseTask["binds"]; ok {
 		task.binds.init(baseTask["binds"].(map[string]interface{}))
+	}
+	if _, ok := baseTask["preview"]; ok {
+		task.preview.init(baseTask["preview"].(map[string]interface{}))
 	}
 	if _, ok := baseTask["options"]; ok {
 		task.options.init(baseTask["options"].([]interface{}))
@@ -76,6 +80,7 @@ func (task *Task) execFzf(command string) string {
 
 func (task *Task) getExecuteCommand(mode string) string {
 	bindList := task.binds.getBindList()
+	preview := task.preview.getPreviewText()
 	optionList := task.options.getOptionList()
 	expectList := task.getExpectList()
 	mondatoryList := []string{"--print-query"}
@@ -85,7 +90,7 @@ func (task *Task) getExecuteCommand(mode string) string {
 		sort.Strings(expectList)
 		sort.Strings(mondatoryList)
 	}
-	command := task.source + " | fzf " + strings.Join(bindList, " ") + " " + strings.Join(optionList, " ") + " --expect=" + strings.Join(expectList, ",") + " " + strings.Join(mondatoryList, " ")
+	command := task.source + " | fzf " + strings.Join(bindList, " ") + " " + preview + " " + strings.Join(optionList, " ") + " --expect=" + strings.Join(expectList, ",") + " " + strings.Join(mondatoryList, " ")
 	command = task.variables.expand(command)
 	//fmt.Println(command+"\n")
 	return command
