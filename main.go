@@ -15,5 +15,7 @@ func main() {
 		fzfyml.Run(flag.Args()[1], flag.Args()[2:])
 	} else if flag.Args()[0] == "test" {
 		fzfyml.Test(flag.Args()[1])
+	} else if flag.Args()[0] == "select-line" {
+		fzfyml.SelectLine(flag.Args()[1], flag.Args()[2])
 	}
 }
