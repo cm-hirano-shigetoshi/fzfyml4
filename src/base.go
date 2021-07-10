@@ -34,7 +34,8 @@ func initTask(yml interface{}, ymlPath string, args []string) (Task, map[string]
 func Run(ymlPath string, args []string) {
 	yml := getYml(ymlPath)
 	task, taskSwitch := initTask(yml, ymlPath, args)
-	result := task.run(nil)
+	var result Result
+	result.init(task.run(nil))
 	for {
 		if newTask, ok := taskSwitch[result.key]; ok {
 			task.update(newTask.(map[string]interface{}))
@@ -42,7 +43,7 @@ func Run(ymlPath string, args []string) {
 			fmt.Print(task.postOperations.apply(result))
 			break
 		}
-		result = task.run(result.query)
+		result.init(task.run(result.query))
 	}
 }
 

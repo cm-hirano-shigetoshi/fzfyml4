@@ -2,7 +2,6 @@ package fzfyml
 
 import (
 	"bufio"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -50,14 +49,16 @@ func prepareLinesToPrint(textFilePath string, indexes []int, max int) map[int]st
 	return lines
 }
 
-func printLines(textFilePath string, indexes []int, max int) {
-	lines := prepareLinesToPrint(textFilePath, indexes, max)
+func getLines(textFilePath string, indexes []int, max int) []string {
+	preparedLines := prepareLinesToPrint(textFilePath, indexes, max)
+	lines := []string{}
 	for _, n := range indexes {
-		fmt.Println(lines[n])
+		lines = append(lines, preparedLines[n])
 	}
+	return lines
 }
 
-func SelectLine(textFilePath string, indexFilePath string) {
+func SelectLine(textFilePath string, indexFilePath string) []string {
 	indexes, max := getIndexSlice(indexFilePath)
-	printLines(textFilePath, indexes, max)
+	return getLines(textFilePath, indexes, max)
 }

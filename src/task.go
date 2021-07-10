@@ -2,6 +2,7 @@ package fzfyml
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"sort"
@@ -9,18 +10,22 @@ import (
 )
 
 type Task struct {
-	source         string
-	query          string
-	variables      Variables
-	binds          Binds
-	preview        Preview
-	options        Options
-	postOperations PostOperations
-	switchExpects  []string
+	source          string
+	sourceTransform string
+	query           string
+	variables       Variables
+	binds           Binds
+	preview         Preview
+	options         Options
+	postOperations  PostOperations
+	switchExpects   []string
 }
 
 func (task *Task) init(baseTask map[string]interface{}, ymlPath string, switchExpects []string, args []string) {
 	task.source = baseTask["source"].(string)
+	if _, ok := baseTask["source_transform"]; ok {
+		task.sourceTransform = baseTask["source_transform"].(string)
+	}
 	variables, _ := baseTask["variables"].(map[string]interface{})
 	task.variables.init(ymlPath, args, variables)
 	if _, ok := baseTask["binds"]; ok {
@@ -50,18 +55,29 @@ func (task *Task) update(newTask map[string]interface{}) {
 	}
 }
 
-func (task *Task) run(query interface{}) Result {
-	var result Result
-	command := task.getExecuteCommand("run")
+func (task *Task) run(query interface{}) string {
+	tmpTextName := ""
+	tmpIndexName := ""
+	defer os.Remove(tmpTextName)
+	defer os.Remove(tmpIndexName)
+	if task.sourceTransform != "" {
+		tmpText, _ := ioutil.TempFile("", "fzfyml4-text-")
+		tmpIndex, _ := ioutil.TempFile("", "fzfyml4-index-")
+		tmpTextName = tmpText.Name()
+		tmpIndexName = tmpIndex.Name()
+	}
+	command := task.getExecuteCommand("run", tmpTextName, tmpIndexName)
 	if query != nil {
 		command += " --query '" + query.(string) + "'"
 	}
-	result.init(task.execFzf(command))
-	return result
+	resultText := task.execFzf(command)
+	return resultText
 }
 
 func (task *Task) test(answer string) bool {
-	response := task.getExecuteCommand("test")
+	tmpTextName := "./fzfyml4-text"
+	tmpIndexName := "./fzfyml4-index"
+	response := task.getExecuteCommand("test", tmpTextName, tmpIndexName)
 	if answer == response {
 		return true
 	} else {
@@ -83,22 +99,43 @@ func (task *Task) execFzf(command string) string {
 	}
 }
 
-func (task *Task) getExecuteCommand(mode string) string {
+func (task *Task) getExecuteCommand(mode string, textFilePath string, indexFilePath string) string {
+	source := task.getSourceText(textFilePath)
 	bindList := task.binds.getBindList()
-	preview := task.preview.getPreviewText()
+	preview := task.preview.getPreviewText(indexFilePath)
 	optionList := task.options.getOptionList()
 	expectList := task.getExpectList()
 	mondatoryList := []string{"--print-query"}
+	postCommand := task.getPostCommand(textFilePath, indexFilePath)
 	if mode == "test" {
 		sort.Strings(bindList)
 		sort.Strings(optionList)
 		sort.Strings(expectList)
 		sort.Strings(mondatoryList)
 	}
-	command := task.source + " | fzf " + strings.Join(bindList, " ") + " " + preview + " " + strings.Join(optionList, " ") + " --expect=" + strings.Join(expectList, ",") + " " + strings.Join(mondatoryList, " ")
+	command := source + " | fzf " + strings.Join(bindList, " ") + " " + preview + " " + strings.Join(optionList, " ") + " --expect=" + strings.Join(expectList, ",") + " " + strings.Join(mondatoryList, " ")
 	command = task.variables.expand(command)
-	//fmt.Println(command+"\n")
+	command += postCommand
+	//fmt.Println(command + "\n")
 	return command
+}
+
+func (task *Task) getPostCommand(textFilePath string, indexFilePath string) string {
+	if task.sourceTransform == "" {
+		return ""
+	} else {
+		exe, _ := os.Executable()
+		return " | " + exe + " untransformed-output " + textFilePath + " " + indexFilePath
+	}
+}
+
+func (task *Task) getSourceText(textFilePath string) string {
+	if task.sourceTransform == "" {
+		return task.source
+	} else {
+		s := task.source + " | tee " + textFilePath + " | " + task.sourceTransform
+		return s
+	}
 }
 
 func (task *Task) getExpectList() []string {
