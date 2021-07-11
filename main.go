@@ -18,7 +18,7 @@ func main() {
 		fzfyml.Run(flag.Args()[1], flag.Args()[2:])
 	} else if flag.Args()[0] == "test" {
 		fzfyml.Test(flag.Args()[1])
-	} else if flag.Args()[0] == "untransformed-output" {
+	} else if flag.Args()[0] == "inner-untransformed-output" {
 		sc := bufio.NewScanner(os.Stdin)
 		sc.Scan()
 		fmt.Println(sc.Text())

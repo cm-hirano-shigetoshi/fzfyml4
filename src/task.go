@@ -132,7 +132,7 @@ func (task *Task) getPostCommand(exe string, textFilePath string, indexFilePath 
 	if task.sourceTransform == "" {
 		return ""
 	} else {
-		return " | " + exe + " untransformed-output " + textFilePath + " " + indexFilePath
+		return " | " + exe + " inner-untransformed-output " + textFilePath + " " + indexFilePath
 	}
 }
 
