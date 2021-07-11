@@ -1,0 +1,38 @@
+base_task:
+    variables:
+      hoge: "1"
+    source: ls -l
+    source_transform: "sed 's/ /{{hoge}}/g'"
+    preview:
+      command: 'echo {1} {{hoge}} {{arg1}}'
+      window: 'down'
+    binds:
+      alt-o:
+        - 'execute-silent[open https://www.yahoo.co.jp]'
+        - 'execute[open https://www.google.co.jp]'
+      alt-r:
+        - 'reload[date | cat -n]'
+    options:
+      - multi
+    post_operations:
+      enter:
+        - join
+task_switch:
+    ctrl-r:
+      variables:
+        hoge: "$(({{hoge}} + 1))"
+      source: ls -lh
+      binds:
+        alt-o:
+          - 'reload[echo alt-o]'
+test:
+    - args:
+        - aaa
+      answer: "ls -l | tee ./fzfyml4-text | sed 's/ /1/g' | fzf --bind 'alt-o:execute-silent[open https://www.yahoo.co.jp]+execute[open https://www.google.co.jp]' --bind 'alt-r:reload[date | cat -n]' --preview 'echo {+n} > ./fzfyml4-index; echo {1} 1 aaa' --preview-window 'down' --multi --expect=ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-r,ctrl-z,enter,esc --print-query | fzfyml4 untransformed-output ./fzfyml4-text ./fzfyml4-index"
+    - result:
+        query: ""
+        key: "ctrl-r"
+        output:
+          - "aaa"
+          - "bbb"
+      answer: "ls -lh | tee ./fzfyml4-text | sed 's/ /2/g' | fzf --bind 'alt-o:reload[echo alt-o]' --bind 'alt-r:reload[date | cat -n]' --preview 'echo {+n} > ./fzfyml4-index; echo {1} 2 aaa' --preview-window 'down' --multi --expect=ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-r,ctrl-z,enter,esc --print-query | fzfyml4 untransformed-output ./fzfyml4-text ./fzfyml4-index"

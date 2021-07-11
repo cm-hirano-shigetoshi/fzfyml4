@@ -75,8 +75,12 @@ func (task *Task) run(query interface{}) string {
 }
 
 func (task *Task) test(answer string) bool {
-	tmpTextName := "./fzfyml4-text"
-	tmpIndexName := "./fzfyml4-index"
+	tmpTextName := ""
+	tmpIndexName := ""
+	if task.sourceTransform != "" {
+		tmpTextName = "./fzfyml4-text"
+		tmpIndexName = "./fzfyml4-index"
+	}
 	response := task.getExecuteCommand("test", tmpTextName, tmpIndexName)
 	if answer == response {
 		return true
@@ -106,7 +110,11 @@ func (task *Task) getExecuteCommand(mode string, textFilePath string, indexFileP
 	optionList := task.options.getOptionList()
 	expectList := task.getExpectList()
 	mondatoryList := []string{"--print-query"}
-	postCommand := task.getPostCommand(textFilePath, indexFilePath)
+	exe, _ := os.Executable()
+	if mode == "test" {
+		exe = "fzfyml4"
+	}
+	postCommand := task.getPostCommand(exe, textFilePath, indexFilePath)
 	if mode == "test" {
 		sort.Strings(bindList)
 		sort.Strings(optionList)
@@ -120,11 +128,10 @@ func (task *Task) getExecuteCommand(mode string, textFilePath string, indexFileP
 	return command
 }
 
-func (task *Task) getPostCommand(textFilePath string, indexFilePath string) string {
+func (task *Task) getPostCommand(exe string, textFilePath string, indexFilePath string) string {
 	if task.sourceTransform == "" {
 		return ""
 	} else {
-		exe, _ := os.Executable()
 		return " | " + exe + " untransformed-output " + textFilePath + " " + indexFilePath
 	}
 }
@@ -133,8 +140,7 @@ func (task *Task) getSourceText(textFilePath string) string {
 	if task.sourceTransform == "" {
 		return task.source
 	} else {
-		s := task.source + " | tee " + textFilePath + " | " + task.sourceTransform
-		return s
+		return task.source + " | tee " + textFilePath + " | " + task.sourceTransform
 	}
 }
 

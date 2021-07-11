@@ -2,7 +2,6 @@ base_task:
     variables:
       hoge: "1"
     source: ls -l
-    source_transform: "sed 's/ /{{hoge}}/g'"
     preview:
       command: 'echo {1} {{hoge}} {{arg1}}'
       window: 'down'
