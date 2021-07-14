@@ -4,6 +4,7 @@ import (
 	"io"
 	"log"
 	"os/exec"
+	"regexp"
 )
 
 func execCommandWithInput(command string, input string) string {
@@ -37,4 +38,10 @@ func uniqueStringSlice(slice []string) []string {
 		ret = append(ret, key)
 	}
 	return ret
+}
+
+func getReplaceTargets(s string) [][]int {
+	pattern := regexp.MustCompile(`{(?:-?\d*|-?\d*\.\.\-?\d*)}`)
+	matches := pattern.FindAllStringSubmatchIndex(s, -1)
+	return matches
 }

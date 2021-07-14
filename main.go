@@ -28,5 +28,7 @@ func main() {
 		for _, line := range lines {
 			fmt.Println(line)
 		}
+	} else if flag.Args()[0] == "inner-nth" {
+		fmt.Println(fzfyml.Nth(flag.Args()[1]))
 	}
 }
