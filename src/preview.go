@@ -12,7 +12,7 @@ func (preview *Preview) init(p map[string]interface{}) {
 	preview.window = p["window"].(string)
 }
 
-func (preview *Preview) getPreviewText(indexFilePath string) string {
+func (preview *Preview) getPreviewText(exe string, textFilePath string, indexFilePath string) string {
 	if indexFilePath == "" {
 		return "--preview '" + preview.command + "' --preview-window '" + preview.window + "'"
 	} else {

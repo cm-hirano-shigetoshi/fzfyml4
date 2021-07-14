@@ -92,7 +92,7 @@ func (task *Task) test(answer string) bool {
 }
 
 func (task *Task) execFzf(command string) string {
-	cmd_exec := exec.Command("sh", "-c", command)
+	cmd_exec := exec.Command("bash", "-c", command)
 	cmd_exec.Stderr = os.Stderr
 	out, _ := cmd_exec.Output()
 	if len(out) > 0 {
@@ -104,16 +104,16 @@ func (task *Task) execFzf(command string) string {
 }
 
 func (task *Task) getExecuteCommand(mode string, textFilePath string, indexFilePath string) string {
-	source := task.getSourceText(textFilePath)
-	bindList := task.binds.getBindList()
-	preview := task.preview.getPreviewText(indexFilePath)
-	optionList := task.options.getOptionList()
-	expectList := task.getExpectList()
-	mondatoryList := []string{"--print-query"}
 	exe, _ := os.Executable()
 	if mode == "test" {
 		exe = "fzfyml4"
 	}
+	source := task.getSourceText(textFilePath)
+	bindList := task.binds.getBindList()
+	preview := task.preview.getPreviewText(exe, textFilePath, indexFilePath)
+	optionList := task.options.getOptionList()
+	expectList := task.getExpectList()
+	mondatoryList := []string{"--print-query"}
 	postCommand := task.getPostCommand(exe, textFilePath, indexFilePath)
 	if mode == "test" {
 		sort.Strings(bindList)

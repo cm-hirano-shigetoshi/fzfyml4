@@ -7,7 +7,7 @@ import (
 )
 
 func execCommandWithInput(command string, input string) string {
-	cmd_exec := exec.Command("sh", "-c", command)
+	cmd_exec := exec.Command("bash", "-c", command)
 	stdin, err := cmd_exec.StdinPipe()
 	if err != nil {
 		log.Fatal(err)
