@@ -116,7 +116,7 @@ func (task *Task) getExecuteCommand(mode string, textFilePath string, indexFileP
 		exe = "fzfyml4"
 	}
 	source := task.getSourceText(textFilePath)
-	bindList := task.binds.getBindList()
+	bindList := task.binds.getBindList(exe, textFilePath, indexFilePath, task.delimiter)
 	preview := task.preview.getPreviewText(exe, textFilePath, indexFilePath, task.delimiter)
 	optionList := task.options.getOptionList()
 	expectList := task.getExpectList()

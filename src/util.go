@@ -45,3 +45,17 @@ func getReplaceTargets(s string) [][]int {
 	matches := pattern.FindAllStringSubmatchIndex(s, -1)
 	return matches
 }
+
+func expandFieldIndex(command string, exe string, textFilePath string, delimiter interface{}) string {
+	targets := getReplaceTargets(command)
+	for i := len(targets) - 1; i >= 0; i-- {
+		start, end := targets[i][0], targets[i][1]
+		index := command[start+1 : end-1]
+		delimiterOptions := ""
+		if delimiter != nil {
+			delimiterOptions = " \"" + delimiter.(string) + "\""
+		}
+		command = command[:start] + "$(sed -n $(({n}+1))p " + textFilePath + " | " + exe + " inner-nth \"" + index + "\"" + delimiterOptions + ")" + command[end:]
+	}
+	return command
+}

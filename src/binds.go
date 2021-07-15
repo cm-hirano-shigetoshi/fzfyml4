@@ -23,12 +23,16 @@ func (binds *Binds) update(list map[string]interface{}) {
 	}
 }
 
-func (binds *Binds) getBindList() []string {
+func (binds *Binds) getBindList(exe string, textFilePath string, indexFilePath string, delimiter interface{}) []string {
 	list := []string{}
 	for key, operations := range binds.list {
 		opeList := []string{}
 		for _, ope := range operations {
-			opeList = append(opeList, ope)
+			if textFilePath == "" {
+				opeList = append(opeList, ope)
+			} else {
+				opeList = append(opeList, expandFieldIndex(ope, exe, textFilePath, delimiter))
+			}
 		}
 		list = append(list, "--bind '"+key+":"+strings.Join(opeList, "+")+"'")
 	}
