@@ -13,6 +13,7 @@ type Task struct {
 	source          string
 	sourceTransform string
 	query           string
+	delimiter       interface{}
 	variables       Variables
 	binds           Binds
 	preview         Preview
@@ -26,6 +27,9 @@ func (task *Task) init(baseTask map[string]interface{}, ymlPath string, switchEx
 	if _, ok := baseTask["source_transform"]; ok {
 		task.sourceTransform = baseTask["source_transform"].(string)
 	}
+	if _, ok := baseTask["delimiter"]; ok {
+		task.delimiter = baseTask["delimiter"].(string)
+	}
 	variables, _ := baseTask["variables"].(map[string]interface{})
 	task.variables.init(ymlPath, args, variables)
 	if _, ok := baseTask["binds"]; ok {
@@ -36,7 +40,10 @@ func (task *Task) init(baseTask map[string]interface{}, ymlPath string, switchEx
 	}
 	if _, ok := baseTask["options"]; ok {
 		task.options.init(baseTask["options"].([]interface{}))
+	} else {
+		task.options.init([]interface{}{})
 	}
+	task.options.setDelimiter(task.delimiter)
 	if _, ok := baseTask["post_operations"]; ok {
 		task.postOperations.init(baseTask["post_operations"].(map[string]interface{}))
 	}
@@ -110,7 +117,7 @@ func (task *Task) getExecuteCommand(mode string, textFilePath string, indexFileP
 	}
 	source := task.getSourceText(textFilePath)
 	bindList := task.binds.getBindList()
-	preview := task.preview.getPreviewText(exe, textFilePath, indexFilePath)
+	preview := task.preview.getPreviewText(exe, textFilePath, indexFilePath, task.delimiter)
 	optionList := task.options.getOptionList()
 	expectList := task.getExpectList()
 	mondatoryList := []string{"--print-query"}

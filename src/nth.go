@@ -17,15 +17,6 @@ func pos(index int, length int) int {
 	}
 }
 
-func idx(str [][]string, index int) []string {
-	if index >= 0 {
-		return str[index]
-	} else {
-		index = len(str) + index
-		return str[index]
-	}
-}
-
 func getRangeText(line string, start int, end int, d interface{}) string {
 	pattern := regexp.MustCompile(`\S+\s*`)
 	var islands []string
@@ -67,9 +58,18 @@ func oneRange(line string, i string, d interface{}) string {
 		}
 		if d == nil {
 			matches := pattern.FindAllStringSubmatch(line, -1)
-			return idx(matches, index)[0]
+			if index >= 0 {
+				return matches[index][0]
+			} else {
+				return matches[len(matches)+index][0]
+			}
 		} else {
-			return "aaa"
+			if index >= 0 {
+				return strings.Split(line, d.(string))[index]
+			} else {
+				sp := strings.Split(line, d.(string))
+				return sp[len(sp)+index]
+			}
 		}
 	} else {
 		if i == ".." {
@@ -92,7 +92,7 @@ func oneRange(line string, i string, d interface{}) string {
 	}
 }
 
-func Nth(indexs string) string {
+func Nth(indexs string, delimiter interface{}) string {
 	sc := bufio.NewScanner(os.Stdin)
 	text := []string{}
 	for sc.Scan() {
@@ -102,7 +102,7 @@ func Nth(indexs string) string {
 			lineElements = append(lineElements, line)
 		} else {
 			for _, index := range strings.Split(indexs, ",") {
-				lineElements = append(lineElements, oneRange(line, index, nil))
+				lineElements = append(lineElements, oneRange(line, index, delimiter))
 			}
 		}
 		text = append(text, strings.Join(lineElements, " "))

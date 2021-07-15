@@ -29,6 +29,10 @@ func main() {
 			fmt.Println(line)
 		}
 	} else if flag.Args()[0] == "inner-nth" {
-		fmt.Println(fzfyml.Nth(flag.Args()[1]))
+		var delimiter interface{} = nil
+		if len(flag.Args()) > 2 {
+			delimiter = flag.Args()[2]
+		}
+		fmt.Println(fzfyml.Nth(flag.Args()[1], delimiter))
 	}
 }
