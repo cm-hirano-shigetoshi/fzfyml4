@@ -81,19 +81,22 @@ func (task *Task) run(query interface{}) string {
 	return resultText
 }
 
-func (task *Task) test(answer string) bool {
+func (task *Task) test(query interface{}, answer string) bool {
 	tmpTextName := ""
 	tmpIndexName := ""
 	if task.sourceTransform != "" {
 		tmpTextName = "./fzfyml4-text"
 		tmpIndexName = "./fzfyml4-index"
 	}
-	response := task.getExecuteCommand("test", tmpTextName, tmpIndexName)
-	if answer == response {
+	command := task.getExecuteCommand("test", tmpTextName, tmpIndexName)
+	if query != nil {
+		command += " --query '" + query.(string) + "'"
+	}
+	if answer == command {
 		return true
 	} else {
 		fmt.Println(answer)
-		fmt.Println(response)
+		fmt.Println(command)
 		return false
 	}
 }

@@ -58,7 +58,7 @@ func Test(ymlPath string) {
 		}
 	}
 	task, taskSwitch := initTask(yml, ymlPath, args)
-	if !task.test(test.(map[string]interface{})["answer"].(string)) {
+	if !task.test(nil, test.(map[string]interface{})["answer"].(string)) {
 		log.Fatal("test failed!")
 	}
 	for _, test := range tests[1:] {
@@ -66,7 +66,7 @@ func Test(ymlPath string) {
 		result.initFromYml(test.(map[string]interface{})["result"].(map[string]interface{}))
 		if newTask, ok := taskSwitch[result.key]; ok {
 			task.update(newTask.(map[string]interface{}))
-			if !task.test(test.(map[string]interface{})["answer"].(string)) {
+			if !task.test(result.query, test.(map[string]interface{})["answer"].(string)) {
 				log.Fatal("test failed!")
 			}
 		} else {

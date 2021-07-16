@@ -35,4 +35,4 @@ test:
         output:
           - "aaa"
           - "bbb"
-      answer: "ls -lh | fzf --bind 'alt-o:reload[echo alt-o]' --bind 'alt-r:execute-silent[echo {-2} >> /tmp/debug]' --preview 'echo {1} 2 aaa' --preview-window \"down\" --delimiter=\"i\" --multi --expect=ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-r,ctrl-z,enter,esc --print-query"
+      answer: "ls -lh | fzf --bind 'alt-o:reload[echo alt-o]' --bind 'alt-r:execute-silent[echo {-2} >> /tmp/debug]' --preview 'echo {1} 2 aaa' --preview-window \"down\" --delimiter=\"i\" --multi --expect=ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-r,ctrl-z,enter,esc --print-query --query ''"

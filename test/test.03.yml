@@ -1,0 +1,16 @@
+base_task:
+  source: ls -l
+  options:
+    - 'query=$(date)'
+task_switch:
+  ctrl-g:
+    source: ls -l
+test:
+  - answer: 'ls -l | fzf --query="$(date)" --expect=ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-z,enter,esc --print-query'
+  - result:
+      query: 'abc'
+      key: 'ctrl-g'
+      output:
+        - 'aaa'
+        - 'bbb'
+    answer: "ls -l | fzf --query=\"$(date)\" --expect=ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-z,enter,esc --print-query --query 'abc'"
