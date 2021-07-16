@@ -35,7 +35,7 @@ func (options *Options) getOptionList() []string {
 	list := []string{}
 	for key, val := range options.list {
 		if val != "nil" {
-			list = append(list, "--"+key+"='"+val+"'")
+			list = append(list, "--"+key+"=\""+val+"\"")
 		} else {
 			list = append(list, "--"+key)
 		}

@@ -34,7 +34,7 @@ func (preview *Preview) getPreviewText(exe string, textFilePath string, indexFil
 	}
 	if len(preview.window) > 0 {
 		options = append(options, "--preview-window")
-		options = append(options, preview.window)
+		options = append(options, "\""+preview.window+"\"")
 	}
 	return strings.Join(options, " ")
 }

@@ -5,6 +5,7 @@ import (
 	"log"
 	"os/exec"
 	"regexp"
+	"strings"
 )
 
 func execCommandWithInput(command string, input string) string {
@@ -40,6 +41,16 @@ func uniqueStringSlice(slice []string) []string {
 	return ret
 }
 
+func concatStr(str ...string) string {
+	list := []string{}
+	for _, s := range str {
+		if s != "" {
+			list = append(list, s)
+		}
+	}
+	return strings.Join(list, " ")
+}
+
 func getReplaceTargets(s string) [][]int {
 	pattern := regexp.MustCompile(`{(?:-?\d*|-?\d*\.\.\-?\d*)}`)
 	matches := pattern.FindAllStringSubmatchIndex(s, -1)
@@ -53,9 +64,9 @@ func expandFieldIndex(command string, exe string, textFilePath string, delimiter
 		index := command[start+1 : end-1]
 		delimiterOptions := ""
 		if delimiter != nil {
-			delimiterOptions = " \"" + delimiter.(string) + "\""
+			delimiterOptions = "\"" + delimiter.(string) + "\""
 		}
-		command = command[:start] + "\"$(sed -n $(({n}+1))p " + textFilePath + " | " + exe + " inner-nth \"" + index + "\"" + delimiterOptions + ")\"" + command[end:]
+		command = command[:start] + "\"$(" + concatStr("sed -n $(({n}+1))p", textFilePath, "|", exe, "inner-nth", "\""+index+"\"", delimiterOptions) + ")\"" + command[end:]
 	}
 	return command
 }

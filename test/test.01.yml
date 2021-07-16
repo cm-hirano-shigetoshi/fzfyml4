@@ -28,11 +28,11 @@ task_switch:
 test:
     - args:
         - aaa
-      answer: "ls -l | fzf --bind 'alt-o:execute-silent[open https://www.yahoo.co.jp]+execute[open https://www.google.co.jp]' --bind 'alt-r:execute-silent[echo {-2} >> /tmp/debug]' --preview 'echo {1} 1 aaa' --preview-window 'down' --delimiter='i' --multi --expect=ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-r,ctrl-z,enter,esc --print-query"
+      answer: "ls -l | fzf --bind 'alt-o:execute-silent[open https://www.yahoo.co.jp]+execute[open https://www.google.co.jp]' --bind 'alt-r:execute-silent[echo {-2} >> /tmp/debug]' --preview 'echo {1} 1 aaa' --preview-window \"down\" --delimiter=\"i\" --multi --expect=ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-r,ctrl-z,enter,esc --print-query"
     - result:
         query: ""
         key: "ctrl-r"
         output:
           - "aaa"
           - "bbb"
-      answer: "ls -lh | fzf --bind 'alt-o:reload[echo alt-o]' --bind 'alt-r:execute-silent[echo {-2} >> /tmp/debug]' --preview 'echo {1} 2 aaa' --preview-window 'down' --delimiter='i' --multi --expect=ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-r,ctrl-z,enter,esc --print-query"
+      answer: "ls -lh | fzf --bind 'alt-o:reload[echo alt-o]' --bind 'alt-r:execute-silent[echo {-2} >> /tmp/debug]' --preview 'echo {1} 2 aaa' --preview-window \"down\" --delimiter=\"i\" --multi --expect=ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-r,ctrl-z,enter,esc --print-query"

@@ -128,9 +128,9 @@ func (task *Task) getExecuteCommand(mode string, textFilePath string, indexFileP
 		sort.Strings(expectList)
 		sort.Strings(mondatoryList)
 	}
-	command := source + " | fzf " + strings.Join(bindList, " ") + " " + preview + " " + strings.Join(optionList, " ") + " --expect=" + strings.Join(expectList, ",") + " " + strings.Join(mondatoryList, " ")
+	command := concatStr(source, "|", "fzf", strings.Join(bindList, " "), preview, strings.Join(optionList, " "), "--expect="+strings.Join(expectList, ","), strings.Join(mondatoryList, " "))
 	command = task.variables.expand(command)
-	command += postCommand
+	command = concatStr(command, postCommand)
 	//fmt.Println(command + "\n")
 	return command
 }
@@ -139,7 +139,7 @@ func (task *Task) getPostCommand(exe string, textFilePath string, indexFilePath 
 	if task.sourceTransform == "" {
 		return ""
 	} else {
-		return " | " + exe + " inner-untransformed-output " + textFilePath + " " + indexFilePath
+		return concatStr("|", exe, "inner-untransformed-output", textFilePath, indexFilePath)
 	}
 }
 
@@ -147,7 +147,7 @@ func (task *Task) getSourceText(textFilePath string) string {
 	if task.sourceTransform == "" {
 		return task.source
 	} else {
-		return task.source + " | tee " + textFilePath + " | " + task.sourceTransform
+		return concatStr(task.source, "|", "tee", textFilePath, "|", task.sourceTransform)
 	}
 }
 
