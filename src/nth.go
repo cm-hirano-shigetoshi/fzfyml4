@@ -105,7 +105,11 @@ func Nth(indexs string, delimiter interface{}) string {
 				lineElements = append(lineElements, oneRange(line, index, delimiter))
 			}
 		}
-		text = append(text, strings.Join(lineElements, " "))
+		d := ""
+		if delimiter != nil {
+			d = delimiter.(string)
+		}
+		text = append(text, strings.Join(lineElements, d))
 	}
 	return strings.Join(text, "\n")
 }
