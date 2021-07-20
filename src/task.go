@@ -73,10 +73,7 @@ func (task *Task) run(query interface{}) string {
 		tmpTextName = tmpText.Name()
 		tmpIndexName = tmpIndex.Name()
 	}
-	command := task.getExecuteCommand("run", tmpTextName, tmpIndexName)
-	if query != nil {
-		command += " --query '" + query.(string) + "'"
-	}
+	command := task.getExecuteCommand("run", query, tmpTextName, tmpIndexName)
 	resultText := task.execFzf(command)
 	return resultText
 }
@@ -88,10 +85,7 @@ func (task *Task) test(query interface{}, answer string) bool {
 		tmpTextName = "./fzfyml4-text"
 		tmpIndexName = "./fzfyml4-index"
 	}
-	command := task.getExecuteCommand("test", tmpTextName, tmpIndexName)
-	if query != nil {
-		command += " --query '" + query.(string) + "'"
-	}
+	command := task.getExecuteCommand("test", query, tmpTextName, tmpIndexName)
 	if answer == command {
 		return true
 	} else {
@@ -113,7 +107,7 @@ func (task *Task) execFzf(command string) string {
 	}
 }
 
-func (task *Task) getExecuteCommand(mode string, textFilePath string, indexFilePath string) string {
+func (task *Task) getExecuteCommand(mode string, query interface{}, textFilePath string, indexFilePath string) string {
 	exe, _ := os.Executable()
 	if mode == "test" {
 		exe = "fzfyml4"
@@ -124,6 +118,10 @@ func (task *Task) getExecuteCommand(mode string, textFilePath string, indexFileP
 	optionList := task.options.getOptionList()
 	expectList := task.getExpectList()
 	mondatoryList := []string{"--print-query"}
+	queryCommand := ""
+	if query != nil {
+		queryCommand = "--query '" + query.(string) + "'"
+	}
 	postCommand := task.getPostCommand(exe, textFilePath, indexFilePath)
 	if mode == "test" {
 		sort.Strings(bindList)
@@ -131,7 +129,7 @@ func (task *Task) getExecuteCommand(mode string, textFilePath string, indexFileP
 		sort.Strings(expectList)
 		sort.Strings(mondatoryList)
 	}
-	command := concatStr(source, "|", "fzf", strings.Join(bindList, " "), preview, strings.Join(optionList, " "), "--expect="+strings.Join(expectList, ","), strings.Join(mondatoryList, " "))
+	command := concatStr(source, "|", "fzf", strings.Join(bindList, " "), preview, strings.Join(optionList, " "), "--expect="+strings.Join(expectList, ","), strings.Join(mondatoryList, " "), queryCommand)
 	command = task.variables.expand(command)
 	command = concatStr(command, postCommand)
 	//fmt.Println(command + "\n")
