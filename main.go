@@ -2,15 +2,17 @@ package main
 
 import (
 	"bufio"
-	"flag"
 	"fmt"
+	flag "github.com/spf13/pflag"
 	"log"
 	"main/src"
 	"os"
 )
 
 func main() {
+	dPtr := flag.StringP("delimiter", "d", "__nil__", "delimiter")
 	flag.Parse()
+
 	if len(flag.Args()) == 0 {
 		log.Fatal("引数がありません")
 	}
@@ -30,8 +32,8 @@ func main() {
 		}
 	} else if flag.Args()[0] == "inner-nth" {
 		var delimiter interface{} = nil
-		if len(flag.Args()) > 2 {
-			delimiter = flag.Args()[2]
+		if *dPtr != "__nil__" {
+			delimiter = *dPtr
 		}
 		fmt.Println(fzfyml.Nth(flag.Args()[1], delimiter))
 	}
