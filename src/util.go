@@ -83,7 +83,7 @@ func expandFieldIndex(command string, exe string, textFilePath string, delimiter
 		if delimiter != nil {
 			delimiterOptions = "\"" + delimiter.(string) + "\""
 		}
-		command = command[:start] + "\"$(" + concatStr("sed -n $(({n}+1))p", textFilePath, "|", exe, "inner-nth", "\""+index+"\"", delimiterOptions) + ")\"" + command[end:]
+		command = command[:start] + "\"$(" + concatStr("sed -n $(({n}+1))p", textFilePath, "|", exe, "nth-tool", "\""+index+"\"", delimiterOptions) + ")\"" + command[end:]
 	}
 	return command
 }

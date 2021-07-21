@@ -14,7 +14,7 @@ func main() {
 	pathPtr := flag.StringP("path", "p", "auto", "auto|absolute|relative")
 	updirPtr := flag.Int("updir_depth", 3, "auto時に絶対パスと相対パスを切り替える深さ")
 	tildePtr := flag.Bool("tilde_home", false, "ホームディレクトリを~にする")
-	slashPtr := flag.BoolP("slash", "s", false, "ディレクトリの場合末尾に/をつける")
+	slashPtr := flag.Bool("slash", false, "ディレクトリの場合末尾に/をつける")
 	curdirPtr := flag.String("curdir", ".", "相対パスの起点パス")
 	flag.Parse()
 
@@ -35,13 +35,13 @@ func main() {
 		for _, line := range lines {
 			fmt.Println(line)
 		}
-	} else if flag.Args()[0] == "inner-nth" {
+	} else if flag.Args()[0] == "nth-tool" {
 		var delimiter interface{} = nil
 		if *delimiterPtr != "__nil__" {
 			delimiter = *delimiterPtr
 		}
 		fmt.Println(fzfyml.Nth(flag.Args()[1], delimiter))
-	} else if flag.Args()[0] == "inner-path" {
+	} else if flag.Args()[0] == "path-tool" {
 		fmt.Println(fzfyml.Path(*pathPtr, *updirPtr, *tildePtr, *slashPtr, *curdirPtr))
 	}
 }
