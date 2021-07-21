@@ -1,8 +1,8 @@
 package fzfyml
 
 import (
-	//"fmt"
 	"bufio"
+	//"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -25,20 +25,16 @@ func transform(line string, opt PathOption) string {
 	}
 	if strings.HasPrefix(line, "~/") {
 		line = strings.Join([]string{home, line[2:]}, "/")
-		fInfo, _ := os.Stat(line)
-		isDir = fInfo.IsDir()
+		isDir = isDirectory(line)
 	}
 	if opt.path == "absolute" {
-		fInfo, _ := os.Stat(line)
-		isDir = fInfo.IsDir()
+		isDir = isDirectory(line)
 		line, _ = filepath.Abs(line)
 	} else if opt.path == "relative" {
-		fInfo, _ := os.Stat(line)
-		isDir = fInfo.IsDir()
+		isDir = isDirectory(line)
 		line = relativePath(opt.curdir, line)
 	} else {
-		fInfo, _ := os.Stat(line)
-		isDir = fInfo.IsDir()
+		isDir = isDirectory(line)
 		line = relativePath(opt.curdir, line)
 		up := ""
 		for i := 0; i < opt.updirDepth; i++ {

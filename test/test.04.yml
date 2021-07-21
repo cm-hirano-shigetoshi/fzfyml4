@@ -1,0 +1,13 @@
+base_task:
+    source: tac {{arg1}} | awk '!a[$0]++'
+    source_transform: fzfyml4 inner-path -p absolute --tilde_home -s
+    preview:
+      command: 'unbuffer ls -l --color {}'
+      window: 'up:30%'
+    options:
+        - no-sort
+test:
+  - args:
+      - directory_all.txt
+    answer: "tac directory_all.txt | awk '!a[$0]++' | tee ./fzfyml4-text | fzfyml4 inner-path -p absolute --tilde_home -s | fzf --preview 'echo {+n} > ./fzfyml4-index; unbuffer ls -l --color \"$(sed -n $(({n}+1))p ./fzfyml4-text | fzfyml4 inner-nth \"\")\"' --preview-window \"up:30%\" --no-sort --expect=ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-z,enter,esc --print-query | fzfyml4 inner-untransformed-output ./fzfyml4-text ./fzfyml4-index"
+

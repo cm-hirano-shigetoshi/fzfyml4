@@ -3,6 +3,7 @@ package fzfyml
 import (
 	"io"
 	"log"
+	"os"
 	"os/exec"
 	"path/filepath"
 	"regexp"
@@ -57,6 +58,14 @@ func relativePath(base string, path string) string {
 	p, _ := filepath.Abs(path)
 	rel, _ := filepath.Rel(b, p)
 	return rel
+}
+
+func isDirectory(path string) bool {
+	pathInfo, err := os.Stat(path)
+	if err != nil {
+		return false
+	}
+	return pathInfo.IsDir()
 }
 
 func getReplaceTargets(s string) [][]int {
