@@ -10,7 +10,12 @@ import (
 )
 
 func main() {
-	dPtr := flag.StringP("delimiter", "d", "__nil__", "delimiter")
+	delimiterPtr := flag.StringP("delimiter", "d", "__nil__", "delimiter")
+	pathPtr := flag.StringP("path", "p", "auto", "auto|absolute|relative")
+	updirPtr := flag.Int("updir_depth", 3, "auto時に絶対パスと相対パスを切り替える深さ")
+	tildePtr := flag.Bool("tilde_home", false, "ホームディレクトリを~にする")
+	slashPtr := flag.BoolP("slash", "s", false, "ディレクトリの場合末尾に/をつける")
+	curdirPtr := flag.String("curdir", ".", "相対パスの起点パス")
 	flag.Parse()
 
 	if len(flag.Args()) == 0 {
@@ -32,9 +37,11 @@ func main() {
 		}
 	} else if flag.Args()[0] == "inner-nth" {
 		var delimiter interface{} = nil
-		if *dPtr != "__nil__" {
-			delimiter = *dPtr
+		if *delimiterPtr != "__nil__" {
+			delimiter = *delimiterPtr
 		}
 		fmt.Println(fzfyml.Nth(flag.Args()[1], delimiter))
+	} else if flag.Args()[0] == "inner-path" {
+		fmt.Println(fzfyml.Path(*pathPtr, *updirPtr, *tildePtr, *slashPtr, *curdirPtr))
 	}
 }

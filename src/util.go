@@ -4,6 +4,7 @@ import (
 	"io"
 	"log"
 	"os/exec"
+	"path/filepath"
 	"regexp"
 	"strings"
 )
@@ -49,6 +50,13 @@ func concatStr(str ...string) string {
 		}
 	}
 	return strings.Join(list, " ")
+}
+
+func relativePath(base string, path string) string {
+	b, _ := filepath.Abs(base)
+	p, _ := filepath.Abs(path)
+	rel, _ := filepath.Rel(b, p)
+	return rel
 }
 
 func getReplaceTargets(s string) [][]int {
