@@ -36,4 +36,4 @@ test:
         output:
           - "aaa"
           - "bbb"
-      answer: "ls -lh | tee ./fzfyml4-text | sed 's/ /2/g' | fzf --bind 'alt-o:reload[echo alt-o]' --bind 'alt-r:execute-silent[echo \"$(sed -n $(({n}+1))p ./fzfyml4-text | fzfyml4 inner-nth \"-2\" \"i\")\" >> /tmp/debug]' --preview 'echo {+n} > ./fzfyml4-index; echo \"$(sed -n $(({n}+1))p ./fzfyml4-text | fzfyml4 inner-nth \"1\" \"i\")\" 2 aaa' --preview-window \"down\" --delimiter=\"i\" --multi --expect=ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-r,ctrl-z,enter,esc --print-query | fzfyml4 inner-untransformed-output ./fzfyml4-text ./fzfyml4-index --query ''"
+      answer: "ls -lh | tee ./fzfyml4-text | sed 's/ /2/g' | fzf --bind 'alt-o:reload[echo alt-o]' --bind 'alt-r:execute-silent[echo \"$(sed -n $(({n}+1))p ./fzfyml4-text | fzfyml4 inner-nth \"-2\" \"i\")\" >> /tmp/debug]' --preview 'echo {+n} > ./fzfyml4-index; echo \"$(sed -n $(({n}+1))p ./fzfyml4-text | fzfyml4 inner-nth \"1\" \"i\")\" 2 aaa' --preview-window \"down\" --delimiter=\"i\" --multi --expect=ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-r,ctrl-z,enter,esc --print-query --query '' | fzfyml4 inner-untransformed-output ./fzfyml4-text ./fzfyml4-index"
