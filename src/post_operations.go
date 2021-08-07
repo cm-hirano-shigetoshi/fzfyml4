@@ -14,8 +14,9 @@ func (operations *PostOperations) init(operationList map[string]interface{}) {
 }
 
 func (operations *PostOperations) apply(result Result) string {
-	text := strings.Join(result.output, "\n")
+	text := ""
 	if ope, ok := operations.list[result.key].([]interface{}); ok {
+		text = strings.Join(result.output, "\n")
 		for _, operation := range ope {
 			switch operation.(type) {
 			case string:
@@ -28,6 +29,8 @@ func (operations *PostOperations) apply(result Result) string {
 				}
 			}
 		}
+	} else if result.key == "enter" {
+		text = strings.Join(result.output, "\n")
 	}
 	return text
 }
