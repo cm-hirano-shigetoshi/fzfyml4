@@ -130,7 +130,9 @@ func (task *Task) getExecuteCommand(mode string, query interface{}, textFilePath
 		sort.Strings(mondatoryList)
 	}
 	command := concatStr(source, "|", "fzf", strings.Join(bindList, " "), preview, strings.Join(optionList, " "), "--expect="+strings.Join(expectList, ","), strings.Join(mondatoryList, " "), queryCommand)
+	//fmt.Println(command)
 	command = task.variables.expand(command)
+	//fmt.Println(command)
 	command = concatStr(command, postCommand)
 	//fmt.Println(command + "\n")
 	return command
