@@ -34,6 +34,8 @@ func (task *Task) init(baseTask map[string]interface{}, ymlPath string, switchEx
 	task.variables.init(ymlPath, args, variables)
 	if _, ok := baseTask["binds"]; ok {
 		task.binds.init(baseTask["binds"].(map[string]interface{}))
+	} else {
+		task.binds.init(nil)
 	}
 	if _, ok := baseTask["preview"]; ok {
 		task.preview.init(baseTask["preview"].(map[string]interface{}))
