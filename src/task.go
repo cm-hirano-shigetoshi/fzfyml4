@@ -2,6 +2,7 @@ package fzfyml
 
 import (
 	"fmt"
+	set "github.com/deckarep/golang-set"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -157,14 +158,20 @@ func (task *Task) getSourceText(textFilePath string) string {
 }
 
 func (task *Task) getExpectList() []string {
-	expects := []string{}
+	expectSet := set.NewSet()
 	for _, key := range task.postOperations.getExpects() {
-		expects = append(expects, key)
+		expectSet.Add(key)
 	}
 	for _, key := range task.switchExpects {
-		expects = append(expects, key)
+		expectSet.Add(key)
 	}
-	expects = append(expects, strings.Split("enter,esc,ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-z", ",")...)
-	expects = uniqueStringSlice(expects)
+	expectSet = expectSet.Union(set.NewSetFromSlice([]interface{}{"enter", "esc", "ctrl-c", "ctrl-d", "ctrl-g", "ctrl-q", "ctrl-z"}))
+	for _, key := range task.binds.getBindKeys() {
+		expectSet.Remove(key)
+	}
+	expects := []string{}
+	for key := range expectSet.Iter() {
+		expects = append(expects, key.(string))
+	}
 	return expects
 }

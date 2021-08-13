@@ -31,18 +31,6 @@ func execCommandWithInput(command string, input string) string {
 	}
 }
 
-func uniqueStringSlice(slice []string) []string {
-	m := map[string]string{}
-	for _, s := range slice {
-		m[s] = ""
-	}
-	ret := []string{}
-	for key, _ := range m {
-		ret = append(ret, key)
-	}
-	return ret
-}
-
 func concatStr(str ...string) string {
 	list := []string{}
 	for _, s := range str {

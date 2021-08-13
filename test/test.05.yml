@@ -1,0 +1,15 @@
+base_task:
+  variables:
+    backlog_bin: '{{arg1}}'
+  source: '{{backlog_bin}} issues'
+  delimiter: ':'
+  binds:
+    enter:
+        - 'execute-silent:open $({{backlog_bin}} issue-url {1})'
+  options:
+    - ansi
+    - reverse
+test:
+  - args:
+      - "backlog"
+    answer: "backlog issues | fzf --bind 'enter:execute-silent:open $(backlog issue-url {1})' --ansi --delimiter=\":\" --reverse --expect=ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-z,esc --print-query"

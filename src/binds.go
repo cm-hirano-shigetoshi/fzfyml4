@@ -23,6 +23,14 @@ func (binds *Binds) update(list map[string]interface{}) {
 	}
 }
 
+func (binds *Binds) getBindKeys() []string {
+	list := []string{}
+	for key, _ := range binds.list {
+		list = append(list, key)
+	}
+	return list
+}
+
 func (binds *Binds) getBindList(exe string, textFilePath string, indexFilePath string, delimiter interface{}) []string {
 	list := []string{}
 	for key, operations := range binds.list {
