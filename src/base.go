@@ -34,7 +34,8 @@ func initTask(yml interface{}, ymlPath string, args []string) (Task, map[string]
 func Run(ymlPath string, args []string) {
 	yml := getYml(ymlPath)
 	task, taskSwitch := initTask(yml, ymlPath, args)
-	result := task.run(nil)
+	var result Result
+	result.init(task.run(nil))
 	for {
 		if newTask, ok := taskSwitch[result.key]; ok {
 			task.update(newTask.(map[string]interface{}))
@@ -42,7 +43,7 @@ func Run(ymlPath string, args []string) {
 			fmt.Print(task.postOperations.apply(result))
 			break
 		}
-		result = task.run(result.query)
+		result.init(task.run(result.query))
 	}
 }
 
@@ -57,7 +58,7 @@ func Test(ymlPath string) {
 		}
 	}
 	task, taskSwitch := initTask(yml, ymlPath, args)
-	if !task.test(test.(map[string]interface{})["answer"].(string)) {
+	if !task.test(nil, test.(map[string]interface{})["answer"].(string)) {
 		log.Fatal("test failed!")
 	}
 	for _, test := range tests[1:] {
@@ -65,7 +66,7 @@ func Test(ymlPath string) {
 		result.initFromYml(test.(map[string]interface{})["result"].(map[string]interface{}))
 		if newTask, ok := taskSwitch[result.key]; ok {
 			task.update(newTask.(map[string]interface{}))
-			if !task.test(test.(map[string]interface{})["answer"].(string)) {
+			if !task.test(result.query, test.(map[string]interface{})["answer"].(string)) {
 				log.Fatal("test failed!")
 			}
 		} else {

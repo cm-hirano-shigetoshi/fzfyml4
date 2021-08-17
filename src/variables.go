@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"strings"
 	//"os"
 )
@@ -35,10 +36,22 @@ func (variables *Variables) updateFromYml(vars map[string]interface{}) {
 
 func (variables *Variables) expand(text string) string {
 	variables.updateExpandedVars()
-	for key, val := range variables.expandedVars {
-		if strings.Contains(text, "{{"+key+"}}") {
-			text = strings.Replace(text, "{{"+key+"}}", val, -1)
+
+	keys := []string{}
+	for k, _ := range variables.expandedVars {
+		keys = append(keys, k)
+	}
+	parallel := strings.Join(keys, "|")
+	pattern := regexp.MustCompile(`{{(` + parallel + `)}}`)
+	matches := pattern.FindAllStringSubmatchIndex(text, -1)
+	for len(matches) > 0 {
+		for i := len(matches) - 1; i >= 0; i-- {
+			start := matches[i][0]
+			end := matches[i][1]
+			key := text[start+2 : end-2]
+			text = text[:start] + variables.expandedVars[key] + text[end:]
 		}
+		matches = pattern.FindAllStringSubmatchIndex(text, -1)
 	}
 	return text
 }
