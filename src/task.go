@@ -63,6 +63,9 @@ func (task *Task) update(newTask map[string]interface{}) {
 	if _, ok := newTask["binds"]; ok {
 		task.binds.update(newTask["binds"].(map[string]interface{}))
 	}
+	if _, ok := newTask["options"]; ok {
+		task.options.update(newTask["options"].([]interface{}))
+	}
 }
 
 func (task *Task) run(query interface{}) string {

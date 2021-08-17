@@ -11,10 +11,10 @@ type Options struct {
 
 func (options *Options) init(optionList []interface{}) {
 	options.list = map[string]string{}
-	options.initFromYml(optionList)
+	options.update(optionList)
 }
 
-func (options *Options) initFromYml(optionList []interface{}) {
+func (options *Options) update(optionList []interface{}) {
 	for _, opt := range optionList {
 		if strings.Contains(opt.(string), "=") {
 			sp := strings.Split(opt.(string), "=")
@@ -42,3 +42,4 @@ func (options *Options) getOptionList() []string {
 	}
 	return list
 }
+
