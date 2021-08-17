@@ -49,6 +49,8 @@ func (task *Task) init(baseTask map[string]interface{}, ymlPath string, switchEx
 	task.options.setDelimiter(task.delimiter)
 	if _, ok := baseTask["post_operations"]; ok {
 		task.postOperations.init(baseTask["post_operations"].(map[string]interface{}))
+	} else {
+		task.postOperations.init(map[string]interface{}{})
 	}
 	task.switchExpects = switchExpects
 }
@@ -77,6 +79,9 @@ func (task *Task) update(newTask map[string]interface{}) {
 		task.options.update(newTask["options"].([]interface{}))
 	}
 	task.options.setDelimiter(task.delimiter)
+	if _, ok := newTask["post_operations"]; ok {
+		task.postOperations.update(newTask["post_operations"].(map[string]interface{}))
+	}
 }
 
 func (task *Task) run(query interface{}) string {

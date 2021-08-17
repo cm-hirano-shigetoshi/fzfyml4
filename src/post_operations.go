@@ -13,6 +13,12 @@ func (operations *PostOperations) init(operationList map[string]interface{}) {
 	operations.list = operationList
 }
 
+func (operations *PostOperations) update(operationList map[string]interface{}) {
+	for key, val := range operationList {
+		operations.list[key] = val
+	}
+}
+
 func (operations *PostOperations) apply(result Result) string {
 	text := ""
 	if ope, ok := operations.list[result.key].([]interface{}); ok {
