@@ -26,7 +26,9 @@ func (options *Options) update(optionList []interface{}) {
 }
 
 func (options *Options) setDelimiter(delimiter interface{}) {
-	if delimiter != nil {
+	if delimiter == nil {
+		delete(options.list, "delimiter")
+	} else {
 		options.list["delimiter"] = delimiter.(string)
 	}
 }

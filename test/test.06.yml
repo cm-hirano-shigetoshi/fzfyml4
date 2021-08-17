@@ -1,0 +1,17 @@
+base_task:
+  source: date
+  delimiter: '2'
+  preview:
+    command: echo {1}
+task_switch:
+  ctrl-r:
+    delimiter: null
+test:
+  - answer: "date | fzf --preview 'echo {1}' --delimiter=\"2\" --expect=ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-r,ctrl-z,enter,esc --print-query"
+  - result:
+      query: aaa
+      key: ctrl-r
+      output:
+        - aaa
+    answer: "date | fzf --preview 'echo {1}' --expect=ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-r,ctrl-z,enter,esc --print-query --query 'aaa'"
+

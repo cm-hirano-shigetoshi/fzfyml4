@@ -57,15 +57,26 @@ func (task *Task) update(newTask map[string]interface{}) {
 	if _, ok := newTask["source"]; ok {
 		task.source = newTask["source"].(string)
 	}
+	if del, ok := newTask["delimiter"]; ok {
+		if del == interface{}(nil) {
+			task.delimiter = nil
+		} else {
+			task.delimiter = newTask["delimiter"].(string)
+		}
+	}
 	if _, ok := newTask["variables"]; ok {
 		task.variables.update(newTask["variables"].(map[string]interface{}))
 	}
 	if _, ok := newTask["binds"]; ok {
 		task.binds.update(newTask["binds"].(map[string]interface{}))
 	}
+	if _, ok := newTask["preview"]; ok {
+		task.preview.init(newTask["preview"].(map[string]interface{}))
+	}
 	if _, ok := newTask["options"]; ok {
 		task.options.update(newTask["options"].([]interface{}))
 	}
+	task.options.setDelimiter(task.delimiter)
 }
 
 func (task *Task) run(query interface{}) string {
