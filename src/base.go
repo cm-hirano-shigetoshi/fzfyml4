@@ -39,6 +39,7 @@ func Run(ymlPath string, args []string) {
 	for {
 		if newTask, ok := taskSwitch[result.key]; ok {
 			// task_switch後は元タスクのquery指定を無効にする
+			task.variables.updateResult(result)
 			task.options.deleteQuery()
 			task.update(newTask.(map[string]interface{}))
 		} else {
