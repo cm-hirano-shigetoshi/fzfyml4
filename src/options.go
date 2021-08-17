@@ -43,3 +43,6 @@ func (options *Options) getOptionList() []string {
 	return list
 }
 
+func (options *Options) deleteQuery() {
+	delete(options.list, "query")
+}

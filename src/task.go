@@ -126,7 +126,13 @@ func (task *Task) getExecuteCommand(mode string, query interface{}, textFilePath
 	mondatoryList := []string{"--print-query"}
 	queryCommand := ""
 	if query != nil {
-		queryCommand = "--query '" + query.(string) + "'"
+		if q, ok := task.options.list["query"]; ok {
+			// task_switchした後、そこで明示的にqueryが指定されているか
+			queryCommand = "--query '" + q + "'"
+		} else {
+			// 明示的な指定がなければswitch前のクエリを引き継ぐ
+			queryCommand = "--query '" + query.(string) + "'"
+		}
 	}
 	postCommand := task.getPostCommand(exe, textFilePath, indexFilePath)
 	if mode == "test" {
