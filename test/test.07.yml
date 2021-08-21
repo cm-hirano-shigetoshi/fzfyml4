@@ -1,0 +1,18 @@
+base_task:
+  source: date
+  preview:
+    command: echo {1}
+task_switch:
+  ctrl-r:
+    preview:
+      command: echo {2}
+      window: down
+test:
+  - answer: "date | fzf --preview 'echo {1}' --expect=ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-r,ctrl-z,enter,esc --print-query"
+  - result:
+      query: aaa
+      key: ctrl-r
+      output:
+        - aaa
+    answer: "date | fzf --preview 'echo {2}' --preview-window \"down\" --expect=ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-r,ctrl-z,enter,esc --print-query --query 'aaa'"
+

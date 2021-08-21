@@ -13,4 +13,4 @@ test:
       output:
         - 'aaa'
         - 'bbb'
-    answer: "ls -l | fzf --query=\"$(date)\" --expect=ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-z,enter,esc --print-query --query 'abc'"
+    answer: "ls -l | fzf --expect=ctrl-c,ctrl-d,ctrl-g,ctrl-q,ctrl-z,enter,esc --print-query --query 'abc'"

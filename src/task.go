@@ -49,6 +49,8 @@ func (task *Task) init(baseTask map[string]interface{}, ymlPath string, switchEx
 	task.options.setDelimiter(task.delimiter)
 	if _, ok := baseTask["post_operations"]; ok {
 		task.postOperations.init(baseTask["post_operations"].(map[string]interface{}))
+	} else {
+		task.postOperations.init(map[string]interface{}{})
 	}
 	task.switchExpects = switchExpects
 }
@@ -57,11 +59,28 @@ func (task *Task) update(newTask map[string]interface{}) {
 	if _, ok := newTask["source"]; ok {
 		task.source = newTask["source"].(string)
 	}
+	if del, ok := newTask["delimiter"]; ok {
+		if del == interface{}(nil) {
+			task.delimiter = nil
+		} else {
+			task.delimiter = newTask["delimiter"].(string)
+		}
+	}
 	if _, ok := newTask["variables"]; ok {
 		task.variables.update(newTask["variables"].(map[string]interface{}))
 	}
 	if _, ok := newTask["binds"]; ok {
 		task.binds.update(newTask["binds"].(map[string]interface{}))
+	}
+	if _, ok := newTask["preview"]; ok {
+		task.preview.init(newTask["preview"].(map[string]interface{}))
+	}
+	if _, ok := newTask["options"]; ok {
+		task.options.update(newTask["options"].([]interface{}))
+	}
+	task.options.setDelimiter(task.delimiter)
+	if _, ok := newTask["post_operations"]; ok {
+		task.postOperations.update(newTask["post_operations"].(map[string]interface{}))
 	}
 }
 
@@ -123,7 +142,13 @@ func (task *Task) getExecuteCommand(mode string, query interface{}, textFilePath
 	mondatoryList := []string{"--print-query"}
 	queryCommand := ""
 	if query != nil {
-		queryCommand = "--query '" + query.(string) + "'"
+		if q, ok := task.options.list["query"]; ok {
+			// task_switchした後、そこで明示的にqueryが指定されているか
+			queryCommand = "--query '" + q + "'"
+		} else {
+			// 明示的な指定がなければswitch前のクエリを引き継ぐ
+			queryCommand = "--query '" + query.(string) + "'"
+		}
 	}
 	postCommand := task.getPostCommand(exe, textFilePath, indexFilePath)
 	if mode == "test" {

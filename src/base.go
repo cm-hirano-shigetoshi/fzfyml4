@@ -38,6 +38,9 @@ func Run(ymlPath string, args []string) {
 	result.init(task.run(nil))
 	for {
 		if newTask, ok := taskSwitch[result.key]; ok {
+			// task_switch後は元タスクのquery指定を無効にする
+			task.variables.updateResult(result)
+			task.options.deleteQuery()
 			task.update(newTask.(map[string]interface{}))
 		} else {
 			fmt.Print(task.postOperations.apply(result))
@@ -65,6 +68,8 @@ func Test(ymlPath string) {
 		var result Result
 		result.initFromYml(test.(map[string]interface{})["result"].(map[string]interface{}))
 		if newTask, ok := taskSwitch[result.key]; ok {
+			// task_switch後は元タスクのquery指定を無効にする
+			task.options.deleteQuery()
 			task.update(newTask.(map[string]interface{}))
 			if !task.test(result.query, test.(map[string]interface{})["answer"].(string)) {
 				log.Fatal("test failed!")

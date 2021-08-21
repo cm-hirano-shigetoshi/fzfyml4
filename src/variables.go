@@ -34,6 +34,11 @@ func (variables *Variables) updateFromYml(vars map[string]interface{}) {
 	}
 }
 
+func (variables *Variables) updateResult(result Result) {
+	variables.vars["query"] = result.query
+	variables.vars["key"] = result.key
+}
+
 func (variables *Variables) expand(text string) string {
 	variables.updateExpandedVars()
 
