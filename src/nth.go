@@ -75,19 +75,19 @@ func oneRange(line string, i string, d interface{}) string {
 		if i == ".." {
 			start := 1
 			end := -1
-			return getRangeText(line, start, end, nil)
+			return getRangeText(line, start, end, d)
 		} else if strings.HasPrefix(i, "..") {
 			start := 1
 			end, _ := strconv.Atoi(i[2:])
-			return getRangeText(line, start, end, nil)
+			return getRangeText(line, start, end, d)
 		} else if strings.HasSuffix(i, "..") {
 			start, _ := strconv.Atoi(i[:len(i)-2])
 			end := -1
-			return getRangeText(line, start, end, nil)
+			return getRangeText(line, start, end, d)
 		} else {
 			start, _ := strconv.Atoi(i[:strings.Index(i, ".")])
 			end, _ := strconv.Atoi(i[strings.Index(i, ".")+2:])
-			return getRangeText(line, start, end, nil)
+			return getRangeText(line, start, end, d)
 		}
 	}
 }
