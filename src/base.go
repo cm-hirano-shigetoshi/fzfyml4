@@ -31,7 +31,7 @@ func initTask(yml interface{}, ymlPath string, args []string) (Task, map[string]
 	return task, taskSwitch
 }
 
-func Run(ymlPath string, args []string) {
+func execute(ymlPath string, args []string) {
 	yml := getYml(ymlPath)
 	task, taskSwitch := initTask(yml, ymlPath, args)
 	var result Result
@@ -50,7 +50,7 @@ func Run(ymlPath string, args []string) {
 	}
 }
 
-func Test(ymlPath string) {
+func test(ymlPath string) {
 	yml := getYml(ymlPath)
 	tests := yml.(map[string]interface{})["test"].([]interface{})
 	test := tests[0]

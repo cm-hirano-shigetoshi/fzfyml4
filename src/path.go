@@ -54,7 +54,7 @@ func transform(line string, opt PathOption) string {
 	return line
 }
 
-func Path(path string, updirDepth int, tildeHome bool, slash bool, curdir string) string {
+func formatPath(path string, updirDepth int, tildeHome bool, slash bool, curdir string) string {
 	pathOption := PathOption{path, updirDepth, tildeHome, slash, curdir}
 	sc := bufio.NewScanner(os.Stdin)
 	lines := []string{}

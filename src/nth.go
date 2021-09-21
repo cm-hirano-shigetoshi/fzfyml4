@@ -92,7 +92,7 @@ func oneRange(line string, i string, d interface{}) string {
 	}
 }
 
-func Nth(indexs string, delimiter interface{}) string {
+func nth(indexs string, delimiter interface{}) string {
 	sc := bufio.NewScanner(os.Stdin)
 	text := []string{}
 	for sc.Scan() {
