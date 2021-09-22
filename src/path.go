@@ -2,7 +2,7 @@ package fzfyml
 
 import (
 	"bufio"
-	//"fmt"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -54,7 +54,7 @@ func transform(line string, opt PathOption) string {
 	return line
 }
 
-func formatPath(path string, updirDepth int, tildeHome bool, slash bool, curdir string) string {
+func path(path string, updirDepth int, tildeHome bool, slash bool, curdir string) (int, error) {
 	pathOption := PathOption{path, updirDepth, tildeHome, slash, curdir}
 	sc := bufio.NewScanner(os.Stdin)
 	lines := []string{}
@@ -63,5 +63,6 @@ func formatPath(path string, updirDepth int, tildeHome bool, slash bool, curdir 
 		line = transform(line, pathOption)
 		lines = append(lines, line)
 	}
-	return strings.Join(lines, "\n")
+	fmt.Println(strings.Join(lines, "\n"))
+	return 0, nil
 }
