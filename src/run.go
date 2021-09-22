@@ -53,7 +53,7 @@ func Run() int {
 		}
 		return exit
 	case cmdNth.FullCommand():
-		delimiter := interface{}(nil).(string)
+		var delimiter interface{} = nil
 		if *cmdNthDelimiter != "__nil__" {
 			delimiter = *cmdNthDelimiter
 		}
