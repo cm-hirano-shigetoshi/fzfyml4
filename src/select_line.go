@@ -58,7 +58,7 @@ func getLines(textFilePath string, indexes []int, max int) []string {
 	return lines
 }
 
-func SelectLine(textFilePath string, indexFilePath string) []string {
+func selectLine(textFilePath string, indexFilePath string) []string {
 	indexes, max := getIndexSlice(indexFilePath)
 	return getLines(textFilePath, indexes, max)
 }

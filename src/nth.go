@@ -1,8 +1,8 @@
 package fzfyml
 
 import (
-	//"fmt"
 	"bufio"
+	"fmt"
 	"os"
 	"regexp"
 	"strconv"
@@ -92,7 +92,7 @@ func oneRange(line string, i string, d interface{}) string {
 	}
 }
 
-func Nth(indexs string, delimiter interface{}) string {
+func nth(indexs string, delimiter interface{}) (int, error) {
 	sc := bufio.NewScanner(os.Stdin)
 	text := []string{}
 	for sc.Scan() {
@@ -111,5 +111,6 @@ func Nth(indexs string, delimiter interface{}) string {
 		}
 		text = append(text, strings.Join(lineElements, d))
 	}
-	return strings.Join(text, "\n")
+	fmt.Println(strings.Join(text, "\n"))
+	return 0, nil
 }

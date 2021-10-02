@@ -1,10 +1,12 @@
 package fzfyml
 
 import (
+	"bufio"
 	"fmt"
 	"github.com/goccy/go-yaml"
 	"io/ioutil"
 	"log"
+	"os"
 )
 
 func getYml(ymlPath string) interface{} {
@@ -31,7 +33,7 @@ func initTask(yml interface{}, ymlPath string, args []string) (Task, map[string]
 	return task, taskSwitch
 }
 
-func Run(ymlPath string, args []string) {
+func execute(ymlPath string, args []string) (int, error) {
 	yml := getYml(ymlPath)
 	task, taskSwitch := initTask(yml, ymlPath, args)
 	var result Result
@@ -48,9 +50,10 @@ func Run(ymlPath string, args []string) {
 		}
 		result.init(task.run(result.query))
 	}
+	return 0, nil
 }
 
-func Test(ymlPath string) {
+func test(ymlPath string) (int, error) {
 	yml := getYml(ymlPath)
 	tests := yml.(map[string]interface{})["test"].([]interface{})
 	test := tests[0]
@@ -62,7 +65,7 @@ func Test(ymlPath string) {
 	}
 	task, taskSwitch := initTask(yml, ymlPath, args)
 	if !task.test(nil, test.(map[string]interface{})["answer"].(string)) {
-		log.Fatal("test failed!")
+		return 1, fmt.Errorf("test failed!")
 	}
 	for _, test := range tests[1:] {
 		var result Result
@@ -79,4 +82,18 @@ func Test(ymlPath string) {
 			break
 		}
 	}
+	return 0, nil
+}
+
+func innerUntransformedOutput(textFilePath string, indexFilePath string) (int, error) {
+	sc := bufio.NewScanner(os.Stdin)
+	sc.Scan()
+	fmt.Println(sc.Text())
+	sc.Scan()
+	fmt.Println(sc.Text())
+	lines := selectLine(textFilePath, indexFilePath)
+	for _, line := range lines {
+		fmt.Println(line)
+	}
+	return 0, nil
 }
