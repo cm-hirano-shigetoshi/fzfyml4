@@ -119,6 +119,7 @@ func (task *Task) test(query interface{}, answer string) bool {
 
 func (task *Task) execFzf(command string) string {
 	cmd_exec := exec.Command("bash", "-c", command)
+	cmd_exec.Stdin = os.Stdin
 	cmd_exec.Stderr = os.Stderr
 	out, _ := cmd_exec.Output()
 	if len(out) > 0 {
